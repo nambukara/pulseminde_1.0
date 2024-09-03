@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>pulseminde</title>
+	<link rel="icon" href="Screenshot 2024-08-18 095356.png" type="png">
+	<link rel="stylesheet" href="styles.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	
+
+	<script>
+        // Function to fetch the latest record
+        function fetchLatestRecord() {
+            $.ajax({
+                url: 'reyaltime.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#latest-testid').text(data.testid);
+                    $('#latest-temp').text(data.temp);
+                    $('#latest-heartrate').text(data.heartrate);
+                    $('#latest-stressindex').text(data.stressindex);
+                    $('#latest-date').text(data.date);
+                    $('#latest-time').text(data.time);
+                }
+            });
+        }
+
+        // Fetch the latest record every 5 seconds (5000 milliseconds)
+        setInterval(fetchLatestRecord, 5000);
+
+        // Fetch the latest record as soon as the page loads
+        $(document).ready(function() {
+            fetchLatestRecord();
+        });
+    </script>
+	
+</head>
+<body>
+	
+	
+           <img src="logo.png" alt="Snow" style="width:30%" align="left"></body>
+		   <a href="data.php"> <img src="pngwing.com.png" alt="Snow" style="width:8%" align="right" box-shadow: 0 2px 20px rgba(255, 255, 255, 0.699);></a>
+            
+
+			<br><br><br><br><br><br>
+
+
+	<div class="data-head">Mental Health Monitoring System</div>
+
+	<div class="data-container">
+		<div class="data-item">
+			<h2>Pulse rate</h2>
+			<p class="value" id="temperature"><span id="latest-heartrate">Loading...</span></p>
+		</div>
+        <div class="data-item">
+			<h2>Temperature</h2>
+			<p class="value" id="temperature"><span id="latest-temp">Loading...</span> &#8451;</p>
+		</div>
+		<div class="data-item">
+			<h2>stress index</h2>
+			<p class="value" id="humidity"><span id="latest-stressindex">Loading...</span></p>
+		</div>
+
+		
+	</div>
+
+
+	
+  
+    
+
+    
+
+
+
+	
+
+</body>
+</html>
