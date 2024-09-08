@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.0">
 </head>
 <body>
     <a href=index.html><h1>&#x21d0; back</h1></a>
-    <table style="border: 1px solide white ; color: azure; text-align: center; font-size: 20px; width:100%;" >
+    <table style="border: 1px solide white ;  text-align: center; font-size: 20px; width:100%;" >
         <thead>
             <tr style=background-color:black>
                 <th>Tsest ID</th>
