@@ -1,5 +1,5 @@
 body{
-    background-color:RGB(30,30,30,30);
+    background-color:#ffffff;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -10,10 +10,10 @@ body{
 
 
 nav{
-    border: 5px snow;
+    border: 5px rgb(250, 252, 255);
     padding: auto;
     text-align:right; 
-    color: #00d8ed;
+    color: hsl(185, 100%, 46%);
 }
 .data-container{
     display: flex;
@@ -22,9 +22,9 @@ nav{
     margin: 50px auto;
     padding: 20px;
     background-color: RGB(0,0,0,0.25) ;
-    box-shadow: 0 2px 20px rgba(255, 255, 255, 0.699);
+    box-shadow: 0 5px 20px rgba(32, 103, 246,20);
     border-radius: 10px;
-    color: azure;
+    color: rgb(0, 0, 0);
 }
 
 .data-item{
@@ -40,7 +40,7 @@ nav{
 .data-item p{
     font-size: 48px;
     font-weight: bold;
-    color: #00d8ed;
+    color: #17a2b8;
 }
 
 .data-head{
@@ -52,9 +52,9 @@ nav{
     margin: 50px auto;
     padding: 20px;
     background-color: RGB(0,0,0,0.25) ;
-    color: azure;
+    color:hsl(211, 100%, 50%);
     
-    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.699);
+    box-shadow: 0 5px 20px rgba(32, 103, 246,20);
     border-radius: 20px;
 
 
@@ -81,3 +81,17 @@ nav{
     overflow: hidden;
   }
   
+
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 50px;
+    
+    
+}
+
+canvas {
+    background-color:  RGB(0,0,0,0.25);
+    padding: 10px;
+    border-radius: 10px;
+}
