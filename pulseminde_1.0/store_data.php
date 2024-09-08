@@ -17,10 +17,15 @@ $temp = $_POST['temperature'];
 $heartrate = $_POST['heart_rate'];
 $stressindex = $_POST['stress_index'];
 
+// Ensure stress index is formatted to two decimal places
+//$stressindex = number_format((float)$stressindex, 2, '.', '');
+
 // Prepare and bind
 $stmt = $conn->prepare("INSERT INTO esp32 (temp, heartrate, stressindex) VALUES (?, ?, ?)");
-$stmt->bind_param("dii", $temp, $heartrate, $stressindex);
+$stmt->bind_param("ddi", $temp, $heartrate, $stressindex); // Double for both temp and stress_index
 
+
+// Execute the statement
 if ($stmt->execute()) {
     echo "New record created successfully";
 } else {
