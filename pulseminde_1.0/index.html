@@ -103,6 +103,11 @@
             <canvas id="temperatureChart" width="600" height="400"></canvas>
         </div>
     </div>
+    <div class="chart-container">
+        <div>
+            <canvas id="stressIndexChart" width="600" height="400"></canvas>
+        </div>
+    </div>
     
 
     <script>
@@ -177,40 +182,76 @@
             }
         });
 
-        // Function to fetch real-time data from the server
-        function fetchRealTimeData() {
-            $.ajax({
-                url: 'fetch_data.php',  // PHP file returning the last 10 data points in JSON format
-                method: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    // Extract labels and datasets from the response
-                    const labels = data.map(row => row.time);
-                    const pulseRates = data.map(row => row.heartrate);
-                    const temperatures = data.map(row => row.temp);
-
-                    // Update Pulse Rate Chart
-                    pulseRateChart.data.labels = labels;
-                    pulseRateChart.data.datasets[0].data = pulseRates;
-                    pulseRateChart.update();
-
-                    // Update Temperature Chart
-                    temperatureChart.data.labels = labels;
-                    temperatureChart.data.datasets[0].data = temperatures;
-                    temperatureChart.update();
-                },
-                error: function(xhr, status, error) {
-                    console.log('Error fetching real-time data:', error);
+        // Stress Index Chart
+const stressCtx = document.getElementById('stressIndexChart').getContext('2d');
+const stressIndexChart = new Chart(stressCtx, {
+    type: 'line',
+    data: {
+        labels: [],  // Initial labels will be empty, filled dynamically
+        datasets: [{
+            label: 'Stress Index',
+            borderColor: '#32CD32',
+            data: [],  // Initial data will be empty, filled dynamically
+            fill: false,
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Time'
                 }
-            });
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Stress Index'
+                }
+            }
         }
+    }
+});
 
-        // Fetch data every 5 seconds
-        setInterval(fetchRealTimeData, 5000);
+        // Function to fetch real-time data from the server
+        // Function to fetch real-time data from the server
+function fetchRealTimeData() {
+    $.ajax({
+        url: 'fetch_data.php',  // PHP file returning the last 10 data points in JSON format
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            const labels = data.map(row => row.time);
+            const pulseRates = data.map(row => row.heartrate);
+            const temperatures = data.map(row => row.temp);
+            const stressIndexes = data.map(row => row.stressindex);  // Include stress index data
 
-        // Initial fetch
-        fetchRealTimeData();
-    </script>
+            pulseRateChart.data.labels = labels;
+            pulseRateChart.data.datasets[0].data = pulseRates;
+            pulseRateChart.update();
+
+            temperatureChart.data.labels = labels;
+            temperatureChart.data.datasets[0].data = temperatures;
+            temperatureChart.update();
+
+            stressIndexChart.data.labels = labels;  // Use the same time labels
+            stressIndexChart.data.datasets[0].data = stressIndexes;
+            stressIndexChart.update();
+        },
+        error: function(xhr, status, error) {
+            console.log('Error fetching real-time data:', error);
+        }
+    });
+}
+
+// Fetch data every 5 seconds
+setInterval(fetchRealTimeData, 5000);
+
+// Initial fetch
+fetchRealTimeData();
+</script>
 
 
 </body>
