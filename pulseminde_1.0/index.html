@@ -5,10 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>pulseminde</title>
 	<link rel="icon" href="Screenshot 2024-08-18 095356.png" type="png">
-	<link rel="stylesheet" href="styles.css">
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="styles.css?v=1.0">
 
-	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	<script>
         // Function to fetch the latest record
@@ -24,6 +23,22 @@
                     $('#latest-stressindex').text(data.stressindex);
                     $('#latest-date').text(data.date);
                     $('#latest-time').text(data.time);
+                    
+                    // Check if temperature >35
+                    if (parseFloat(data.temp) > 37) {
+                        $('#latest-temp').css('color', 'red');  // Set text color to red
+                    } else {
+                        $('#latest-temp').css('color', '');    // Reset to default color
+                    }
+
+                    // Check heartrate <100
+                    if (parseFloat(data.heartrate) > 95) {
+                        $('#latest-heartrate').css('color', 'red');  // Set text color to red
+                    }else if (parseFloat(data.heartrate) <60) {
+                        $('#latest-heartrate').css('color', 'red');  // Set text color to red 
+                    }else {
+                        $('#latest-heartrate').css('color', '');    // Reset to default color
+                    }
                 }
             });
         }
@@ -36,47 +51,167 @@
             fetchLatestRecord();
         });
     </script>
-	
+
+</style>
+<!-- Include Chart.js and jQuery from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-	
-	
-           <img src="logo.png" alt="Snow" style="width:30%" align="left"></body>
-		   <a href="data.php"> <img src="pngwing.com.png" alt="Snow" style="width:8%" align="right" box-shadow: 0 2px 20px rgba(255, 255, 255, 0.699);></a>
-            
+	<img src="logo.png" alt="Snow" style="width:30%" align="left">
+	<a href="data.php">
+		<img src="pngwing.com.png" alt="Snow" style="width:8%" align="right" style="box-shadow: 0 2px 20px rgba(255, 255, 255, 0.699);">
+	</a>
 
-			<br><br><br><br><br><br>
-
+	<br><br><br><br><br><br>
 
 	<div class="data-head">Mental Health Monitoring System</div>
 
 	<div class="data-container">
 		<div class="data-item">
 			<h2>Pulse rate</h2>
-			<p class="value" id="temperature"><span id="latest-heartrate">Loading...</span></p>
+			<p class="value" id="temperature"><span id="latest-heartrate">...</span></p>
 		</div>
         <div class="data-item">
 			<h2>Temperature</h2>
-			<p class="value" id="temperature"><span id="latest-temp">Loading...</span> &#8451;</p>
+			<p class="value" id="temperature"><span id="latest-temp">...</span> &#8451;</p>
 		</div>
 		<div class="data-item">
-			<h2>stress index</h2>
-			<p class="value" id="humidity"><span id="latest-stressindex">Loading...</span></p>
+			<h2>Stress index</h2>
+			<p class="value" id="humidity"><span id="latest-stressindex">...</span></p>
 		</div>
-
-		
 	</div>
 
 
-	
-  
+
+
+        
+
+
+
+
+
+
+
+
+
+    <div class="chart-container">
+        <div>
+            <canvas id="pulseRateChart" width="600" height="400"></canvas>
+        </div>
+        <div>
+            <canvas id="temperatureChart" width="600" height="400"></canvas>
+        </div>
+    </div>
     
 
-    
+    <script>
+        // Pulse Rate Chart
+        const pulseCtx = document.getElementById('pulseRateChart').getContext('2d');
+        const pulseRateChart = new Chart(pulseCtx, {
+            type: 'line',
+            data: {
+                labels: [],  // Initial labels will be empty, filled dynamically
+                datasets: [{
+                    label: 'Pulse Rate',
+                    borderColor: '#00BFFF',
+                    data: [],  // Initial data will be empty, filled dynamically
+                    fill: false,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Pulse Rate (bpm)'
+                        }
+                    }
+                }
+            }
+        });
 
+        // Temperature Chart
+        const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+        const temperatureChart = new Chart(tempCtx, {
+            type: 'line',
+            data: {
+                labels: [],  // Initial labels will be empty, filled dynamically
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    borderColor: '#FF6347',
+                    data: [],  // Initial data will be empty, filled dynamically
+                    fill: false,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toFixed(2); // Ensure temperature values are shown with 2 decimal places
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
+        // Function to fetch real-time data from the server
+        function fetchRealTimeData() {
+            $.ajax({
+                url: 'fetch_data.php',  // PHP file returning the last 10 data points in JSON format
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Extract labels and datasets from the response
+                    const labels = data.map(row => row.time);
+                    const pulseRates = data.map(row => row.heartrate);
+                    const temperatures = data.map(row => row.temp);
 
-	
+                    // Update Pulse Rate Chart
+                    pulseRateChart.data.labels = labels;
+                    pulseRateChart.data.datasets[0].data = pulseRates;
+                    pulseRateChart.update();
+
+                    // Update Temperature Chart
+                    temperatureChart.data.labels = labels;
+                    temperatureChart.data.datasets[0].data = temperatures;
+                    temperatureChart.update();
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error fetching real-time data:', error);
+                }
+            });
+        }
+
+        // Fetch data every 5 seconds
+        setInterval(fetchRealTimeData, 5000);
+
+        // Initial fetch
+        fetchRealTimeData();
+    </script>
+
 
 </body>
 </html>
