@@ -11,16 +11,16 @@ DallasTemperature sensors(&oneWire);
 // Heart rate sensor connected to GPIO 33
 #define HEART_RATE_PIN 33
 
-// Wi-Fi credentials
-const char* ssid = "Dunithgalaxy";           // Replace with your SSID
-const char* password = "dunith1213";     // Replace with your password
-
-// Server address
-const char* serverName = "http:// 192.168.131.72/pulseminde_1.0/store_data.php"; // Replace with your server IP and PHP script path
-
 int heartRateValue = 0;
 
-void setup(void) {
+// Wi-Fi credentials
+const char* ssid = "Tharidi";           // Replace with your SSID
+const char* password = "Gamagetp9";   // Replace with your Wi-Fi password
+
+// Server URL (your local server's IP address)
+const char* serverName = "http:// 192.168.215.72/pulseminde_1.0/store_data.php"; // Replace with your server's IP
+
+void setup() {
   // Start serial communication
   Serial.begin(115200);
 
@@ -41,7 +41,7 @@ void setup(void) {
   Serial.println("Connected to WiFi");
 }
 
-void loop(void) {
+void loop() {
   // Request temperature measurement from DS18B20
   sensors.requestTemperatures();
   float temperatureC = sensors.getTempCByIndex(0);
@@ -50,7 +50,7 @@ void loop(void) {
   heartRateValue = analogRead(HEART_RATE_PIN);
 
   // Convert the analog value to a readable pulse (this depends on your sensor)
-  int pulse = map(heartRateValue, 0, 4095, 0, 200); // Modify as needed based on your sensor
+  int pulse = map(heartRateValue, 0, 4095, 40, 100); // Adjust range based on sensor output
 
   // Calculate stress index
   float stress_index = (pulse - 80) / 80.0 + (temperatureC - 33) / 33.0;
@@ -60,14 +60,14 @@ void loop(void) {
   Serial.print(temperatureC);
   Serial.println(" °C");
 
-  Serial.print("Heart Rate Value: ");
-  Serial.println(pulse);  // Print the converted heart rate value
+  Serial.print("Heart Rate: ");
+  Serial.println(pulse);
 
   Serial.print("Stress index: ");
   Serial.println(stress_index);
 
   // Send data to server
-  if(WiFi.status() == WL_CONNECTED) {
+  if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
 
     // Specify request destination
@@ -99,5 +99,5 @@ void loop(void) {
   }
 
   // Add a delay before the next reading
-  delay(2000);
+  delay(2000);  // 2-second delay
 }
