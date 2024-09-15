@@ -14,13 +14,16 @@ DallasTemperature sensors(&oneWire);
 int heartRateValue = 0;
 
 // Wi-Fi credentials
-const char* ssid = "Tharidi";           // Replace with your SSID
-const char* password = "Gamagetp9";   // Replace with your Wi-Fi password
+const char* ssid = "Dialog 4G 123";           // Replace with your SSID
+const char* password = "d6BC22d1";   // Replace with your Wi-Fi password
 
 // Server URL (your local server's IP address)
-const char* serverName = "http:// 192.168.215.72/pulseminde_1.0/store_data.php"; // Replace with your server's IP
+const char* serverName = "http://192.168.8.144/pulseminde_1.0/store_data.php"; // Replace with your server's IP
 
 void setup() {
+  //led blink
+  pinMode(12, OUTPUT);
+
   // Start serial communication
   Serial.begin(115200);
 
@@ -68,6 +71,12 @@ void loop() {
 
   // Send data to server
   if (WiFi.status() == WL_CONNECTED) {
+
+   digitalWrite(12, HIGH);
+   delay(100);
+   digitalWrite(12, LOW);
+   delay(100);
+
     HTTPClient http;
 
     // Specify request destination
